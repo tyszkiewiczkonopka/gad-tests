@@ -1,5 +1,5 @@
 import { Page } from '@playwright/test';
-import { url } from 'inspector';
+
 
 export class ArticlesPage {
   url = '/articles.html';
@@ -9,7 +9,7 @@ export class ArticlesPage {
     await this.page.goto(this.url);
   }
 
-  async title(): Promise<string>{
+  async title(): Promise<string> {
     return await this.page.title();
   }
 }

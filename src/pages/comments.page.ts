@@ -8,7 +8,7 @@ export class CommentsPage {
     await this.page.goto(this.url);
   }
 
-  async title(): Promise<string>{
+  async title(): Promise<string> {
     return await this.page.title();
   }
 }
