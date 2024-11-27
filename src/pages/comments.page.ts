@@ -4,9 +4,10 @@ import { Page } from '@playwright/test';
 
 export class CommentsPage extends BasePage {
   url = '/comments.html';
-  mainMenu = new MainMenuComponent(this.page);
+  mainMenu: MainMenuComponent;
 
   constructor(page: Page) {
     super(page);
+    this.mainMenu = new MainMenuComponent(this.page);
   }
 }
