@@ -33,6 +33,11 @@ test.describe('Verify login', () => {
 
     //Assert
     const errorMessage = loginPage.loginError;
-    await expect(errorMessage).toContainText('Invalid username or password');
+    await expect
+      .soft(errorMessage)
+      .toContainText('Invalid username or password');
+
+    const title = await loginPage.title();
+    expect.soft(title).toContain('Login');
   });
 });
