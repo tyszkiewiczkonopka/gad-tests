@@ -18,7 +18,7 @@ test.describe('Verify login', () => {
     const title = await welcomePage.title();
 
     //Assert
-    expect(title).toContain('Login');
+    expect(title).toContain('Welcome');
   });
 
   test('reject login with incorrect password @GAD_R02_01', async ({ page }) => {
