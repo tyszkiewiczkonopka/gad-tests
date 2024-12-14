@@ -43,7 +43,8 @@ test.describe('Verify register', () => {
     expect.soft(titleLogin).toContain('Login');
 
     //Assert - check if user can login
-    await loginPage.login({ //anonymous object
+    await loginPage.login({
+      //anonymous object
       userEmail: registerUserData.userEmail,
       userPassword: registerUserData.userPassword,
     });
