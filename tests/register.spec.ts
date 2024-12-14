@@ -10,21 +10,16 @@ test.describe('Verify register', () => {
     page,
   }) => {
     //Arrange
-    // const userFirstName = faker.person.firstName().replace(/[^A-Za-z]/g, '');
-    // const userLastName = faker.person.lastName().replace(/[^A-Za-z]/g, '');
-    // const userEmail = faker.internet.email({
-    //   firstName: userFirstName,
-    //   lastName: userLastName,
-    // });
-    // const userPassword = faker.internet.password();
 
     const registerUserData: RegisterUser = {
+      // Remove non-alphabetic characters from first and last name
       userFirstName: faker.person.firstName().replace(/[^A-Za-z]/g, ''),
       userLastName: faker.person.lastName().replace(/[^A-Za-z]/g, ''),
-      userEmail: '',
+      userEmail: '', // Temporary placeholder
       userPassword: faker.internet.password(),
     };
 
+    // Generate email after firstName and lastName are set
     registerUserData.userEmail = faker.internet.email({
       firstName: registerUserData.userFirstName,
       lastName: registerUserData.userLastName,
