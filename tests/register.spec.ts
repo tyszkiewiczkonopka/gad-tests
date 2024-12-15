@@ -1,8 +1,7 @@
-import { RegisterUser } from '../src/models/user.model';
+import { randomUserData } from '../src/factories/user.factory';
 import { LoginPage } from '../src/pages/login.page';
 import { RegisterPage } from '../src/pages/register.page';
 import { WelcomePage } from '../src/pages/welcome.page';
-import { faker } from '@faker-js/faker';
 import test, { expect } from '@playwright/test';
 
 test.describe('Verify register', () => {
@@ -10,21 +9,7 @@ test.describe('Verify register', () => {
     page,
   }) => {
     //Arrange
-
-    const registerUserData: RegisterUser = {
-      // Remove non-alphabetic characters from first and last name
-      userFirstName: faker.person.firstName().replace(/[^A-Za-z]/g, ''),
-      userLastName: faker.person.lastName().replace(/[^A-Za-z]/g, ''),
-      userEmail: '', // Temporary placeholder
-      userPassword: faker.internet.password(),
-    };
-
-    // Generate email after firstName and lastName are set
-    registerUserData.userEmail = faker.internet.email({
-      firstName: registerUserData.userFirstName,
-      lastName: registerUserData.userLastName,
-    });
-
+    const registerUserData = randomUserData();
     const registerPage = new RegisterPage(page);
 
     //Act
@@ -60,13 +45,8 @@ test.describe('Verify register', () => {
   }) => {
     //Arrange
 
-    const registerUserData: RegisterUser = {
-      // Remove non-alphabetic characters from first and last name
-      userFirstName: faker.person.firstName().replace(/[^A-Za-z]/g, ''),
-      userLastName: faker.person.lastName().replace(/[^A-Za-z]/g, ''),
-      userEmail: '%r#8',
-      userPassword: faker.internet.password(),
-    };
+    const registerUserData = randomUserData();
+    registerUserData.userEmail = 'notvalidemail.com';
 
     const registerPage = new RegisterPage(page);
 
@@ -84,21 +64,16 @@ test.describe('Verify register', () => {
     page,
   }) => {
     //Arrange
+    const registerUserData = randomUserData();
     const registerPage = new RegisterPage(page);
+    const expectedErrorText = 'This field is required';
 
     //Act
     await registerPage.goto();
-    registerPage.userFistNameInput.fill(
-      faker.person.firstName().replace(/[^A-Za-z]/g, ''),
-    );
-    registerPage.userLastNameInput.fill(
-      faker.person.lastName().replace(/[^A-Za-z]/g, ''),
-    );
-    registerPage.userPasswordInput.fill(faker.internet.password());
-
+    registerPage.userFistNameInput.fill(registerUserData.userFirstName);
+    registerPage.userLastNameInput.fill(registerUserData.userLastName);
+    registerPage.userPasswordInput.fill(registerUserData.userPassword);
     registerPage.registerButton.click();
-
-    const expectedErrorText = 'This field is required';
 
     //Assert - check if alert popup is displayed
     await expect(registerPage.emailErrorTest).toHaveText(expectedErrorText);
