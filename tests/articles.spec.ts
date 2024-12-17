@@ -66,16 +66,21 @@ test.describe('Verify articles', () => {
     await expect(addArticleView.alertPopup).toHaveText(expectedErrorMessage);
   });
 
-  test('new article not created - title 128 characters @GAD_R04_01 @positive', async () => {
+  test('new article not created - title 128 characters @GAD_R04_01 @positive', async ({
+    page,
+  }) => {
     //Arrange
-    const expectedErrorMessage = 'Article was created';
+    const articlePage = new ArticlePage(page);
     const articleData = randomNewArticle(128);
 
     //Act
     await addArticleView.createArticle(articleData);
 
     //Assert
-    await expect(addArticleView.alertPopup).toHaveText(expectedErrorMessage);
+    await expect.soft(articlePage.articleTitle).toHaveText(articleData.title);
+    await expect
+      .soft(articlePage.articleBody)
+      .toHaveText(articleData.body, { useInnerText: true });
   });
 
   test('new article not created - title over 128 characters @GAD_R04_01 @negative', async () => {
