@@ -7,75 +7,83 @@ import { AddArticleView } from '../src/views/add-article.view';
 import test, { expect } from '@playwright/test';
 
 test.describe('Verify articles', () => {
-  test('create new article @GAD_R04_01', async ({ page }) => {
-    //Arrange
-    const loginPage = new LoginPage(page);
-    const articlesPage = new ArticlesPage(page);
-    const addArticleView = new AddArticleView(page);
-    const articleData = randomNewArticle();
+  let articlesPage: ArticlesPage;
+  let addArticleView: AddArticleView;
+  let loginPage: LoginPage;
+
+  test.beforeEach(async ({ page }) => {
+    loginPage = new LoginPage(page);
+    articlesPage = new ArticlesPage(page);
+    addArticleView = new AddArticleView(page);
 
     await loginPage.goto();
     await loginPage.login(testUser1);
     await articlesPage.goto();
 
-    //Act
     await articlesPage.addArticleButtonLogged.click();
     await expect.soft(addArticleView.header).toBeVisible();
+  });
+  test('create new article @GAD_R04_01 @positive', async ({ page }) => {
+    //Arrange
+    const articlePage = new ArticlePage(page);
+    const articleData = randomNewArticle();
 
+    //Act
     await addArticleView.createArticle(articleData);
 
     //Assert
-    const articlePage = new ArticlePage(page);
     await expect.soft(articlePage.articleTitle).toHaveText(articleData.title);
     await expect
       .soft(articlePage.articleBody)
       .toHaveText(articleData.body, { useInnerText: true }); //useInnerText: true - sprawdza tekst wewnątrz elementu, a nie atrybutu (np. uwzględnia <br>)
   });
 
-  test('new article not created - missing title @GAD_R04_01', async ({
-    page,
-  }) => {
+  test('new article not created - missing title @GAD_R04_01 @negative', async () => {
     //Arrange
-    const loginPage = new LoginPage(page);
-    const articlesPage = new ArticlesPage(page);
-    const addArticleView = new AddArticleView(page);
+    const expectedErrorMessage = 'Article was not created';
 
     const articleData = randomNewArticle();
     articleData.title = '';
 
-    const expectedErrorMessage = 'Article was not created';
-
-    await loginPage.goto();
-    await loginPage.login(testUser1);
-    await articlesPage.goto();
-
     //Act
-    await articlesPage.addArticleButtonLogged.click();
     await addArticleView.createArticle(articleData);
 
     //Assert
     await expect(addArticleView.alertPopup).toHaveText(expectedErrorMessage);
   });
 
-  test('new article not created - missing body @GAD_R04_01', async ({
-    page,
-  }) => {
+  test('new article not created - missing body @GAD_R04_01 @negative', async () => {
     //Arrange
-    const loginPage = new LoginPage(page);
-    const articlesPage = new ArticlesPage(page);
-    const addArticleView = new AddArticleView(page);
+    const expectedErrorMessage = 'Article was not created';
 
     const articleData = randomNewArticle();
     articleData.body = '';
 
-    const expectedErrorMessage = 'Article was not created';
+    //Act
+    await addArticleView.createArticle(articleData);
 
-    await loginPage.goto();
-    await loginPage.login(testUser1);
-    await articlesPage.goto();
+    //Assert
+    await expect(addArticleView.alertPopup).toHaveText(expectedErrorMessage);
+  });
+
+  test('new article not created - title 128 characters @GAD_R04_01 @positive', async () => {
+    //Arrange
+    const expectedErrorMessage = 'Article was created';
+    const articleData = randomNewArticle(128);
 
     //Act
-    await articlesPage.addArticleButtonLogged.click();
+    await addArticleView.createArticle(articleData);
+
+    //Assert
+    await expect(addArticleView.alertPopup).toHaveText(expectedErrorMessage);
+  });
+
+  test('new article not created - title over 128 characters @GAD_R04_01 @negative', async () => {
+    //Arrange
+    const expectedErrorMessage = 'Article was not created';
+    const articleData = randomNewArticle(129);
+
+    //Act
     await addArticleView.createArticle(articleData);
 
     //Assert
