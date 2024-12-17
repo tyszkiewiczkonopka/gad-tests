@@ -65,33 +65,34 @@ test.describe('Verify articles', () => {
     //Assert
     await expect(addArticleView.alertPopup).toHaveText(expectedErrorMessage);
   });
+  test.describe('Title length', () => {
+    test('new article not created - title 128 characters @GAD_R04_01 @positive', async ({
+      page,
+    }) => {
+      //Arrange
+      const articlePage = new ArticlePage(page);
+      const articleData = randomNewArticle(128);
 
-  test('new article not created - title 128 characters @GAD_R04_01 @positive', async ({
-    page,
-  }) => {
-    //Arrange
-    const articlePage = new ArticlePage(page);
-    const articleData = randomNewArticle(128);
+      //Act
+      await addArticleView.createArticle(articleData);
 
-    //Act
-    await addArticleView.createArticle(articleData);
+      //Assert
+      await expect.soft(articlePage.articleTitle).toHaveText(articleData.title);
+      await expect
+        .soft(articlePage.articleBody)
+        .toHaveText(articleData.body, { useInnerText: true });
+    });
 
-    //Assert
-    await expect.soft(articlePage.articleTitle).toHaveText(articleData.title);
-    await expect
-      .soft(articlePage.articleBody)
-      .toHaveText(articleData.body, { useInnerText: true });
-  });
+    test('new article not created - title over 128 characters @GAD_R04_01 @negative', async () => {
+      //Arrange
+      const expectedErrorMessage = 'Article was not created';
+      const articleData = randomNewArticle(129);
 
-  test('new article not created - title over 128 characters @GAD_R04_01 @negative', async () => {
-    //Arrange
-    const expectedErrorMessage = 'Article was not created';
-    const articleData = randomNewArticle(129);
+      //Act
+      await addArticleView.createArticle(articleData);
 
-    //Act
-    await addArticleView.createArticle(articleData);
-
-    //Assert
-    await expect(addArticleView.alertPopup).toHaveText(expectedErrorMessage);
+      //Assert
+      await expect(addArticleView.alertPopup).toHaveText(expectedErrorMessage);
+    });
   });
 });
