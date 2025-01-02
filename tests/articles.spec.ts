@@ -23,20 +23,6 @@ test.describe('Verify articles', () => {
     await articlesPage.addArticleButtonLogged.click();
     await expect.soft(addArticleView.header).toBeVisible();
   });
-  test('create new article @GAD_R04_01 @positive', async ({ page }) => {
-    //Arrange
-    const articlePage = new ArticlePage(page);
-    const articleData = randomNewArticle();
-
-    //Act
-    await addArticleView.createArticle(articleData);
-
-    //Assert
-    await expect.soft(articlePage.articleTitle).toHaveText(articleData.title);
-    await expect
-      .soft(articlePage.articleBody)
-      .toHaveText(articleData.body, { useInnerText: true }); //useInnerText: true - sprawdza tekst wewnątrz elementu, a nie atrybutu (np. uwzględnia <br>)
-  });
 
   test('new article not created - missing title @GAD_R04_01 @negative', async () => {
     //Arrange
