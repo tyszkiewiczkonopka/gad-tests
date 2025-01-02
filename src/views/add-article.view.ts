@@ -5,14 +5,16 @@ export class AddArticleView {
   titleInput;
   bodyInput;
   saveButton;
-  header;
+  addNewHeader;
   alertPopup;
 
   constructor(private page: Page) {
     this.titleInput = this.page.getByTestId('title-input');
     this.bodyInput = this.page.getByTestId('body-text');
     this.saveButton = this.page.getByTestId('save');
-    this.header = this.page.getByRole('heading', { name: 'Add New Entry' });
+    this.addNewHeader = this.page.getByRole('heading', {
+      name: 'Add New Entry',
+    });
     this.alertPopup = this.page.getByTestId('alert-popup');
   }
 

@@ -21,7 +21,7 @@ test.describe('Verify articles', () => {
     await articlesPage.goto();
 
     await articlesPage.addArticleButtonLogged.click();
-    await expect.soft(addArticleView.header).toBeVisible();
+    await expect.soft(addArticleView.addNewHeader).toBeVisible();
   });
 
   test('new article not created - missing title @GAD_R04_01 @negative', async () => {
