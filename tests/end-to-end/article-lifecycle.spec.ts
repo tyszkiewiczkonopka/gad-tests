@@ -61,7 +61,7 @@ test.describe('Create, verify and delete article', () => {
 
     //Assert - check if you are redirected to articles page
     await articlesPage.waitForPageToLoadURL();
-    const title = await articlesPage.title();
+    const title = await articlesPage.getTitle();
     expect(title).toContain('Articles');
 
     //Assert - check if article can be found in search
