@@ -1,7 +1,7 @@
 import { RegisterUserModel } from '../models/user.model';
 import { faker } from '@faker-js/faker';
 
-export function randomUserData(): RegisterUserModel {
+export function prepareRandomUserData(): RegisterUserModel {
   const registerUserData: RegisterUserModel = {
     // Remove non-alphabetic characters from first and last name
     userFirstName: faker.person.firstName().replace(/[^A-Za-z]/g, ''),
