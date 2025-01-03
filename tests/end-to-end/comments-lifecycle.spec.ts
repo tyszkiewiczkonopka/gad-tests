@@ -8,6 +8,7 @@ import { LoginPage } from '../../src/pages/login.page';
 import { testUser1 } from '../../src/test-data/user.data';
 import { AddArticleView } from '../../src/views/add-article.view';
 import { AddCommentView } from '../../src/views/add-comment.view';
+import { EditCommentView } from '../../src/views/edit-comment.view';
 import test, { expect } from '@playwright/test';
 
 test.describe('Create, verify and delete comment', () => {
@@ -18,6 +19,7 @@ test.describe('Create, verify and delete comment', () => {
   let articlePage: ArticlePage;
   let addCommentView: AddCommentView;
   let commentPage: CommentPage;
+  let editCommentView: EditCommentView;
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
@@ -26,6 +28,7 @@ test.describe('Create, verify and delete comment', () => {
     articlePage = new ArticlePage(page);
     addCommentView = new AddCommentView(page);
     commentPage = new CommentPage(page);
+    editCommentView = new EditCommentView(page);
 
     articleData = prepareRandomNewArticle();
 
@@ -42,6 +45,7 @@ test.describe('Create, verify and delete comment', () => {
     //Arrange
     const expectedAddCommentHeader = 'Add New Comment';
     const expectedCommentCreatedPopup = 'Comment was created';
+    const expectedCommentEditedPopup = 'Comment was updated';
 
     const newCommentData = prepareRandomNewComment();
 
@@ -50,10 +54,12 @@ test.describe('Create, verify and delete comment', () => {
     await expect(addCommentView.addNewHeader).toHaveText(
       expectedAddCommentHeader,
     );
-    await addCommentView.bodyInput.fill(newCommentData.body);
-    await addCommentView.saveButton.click();
 
-    //Assert
+    await addCommentView.createComment(newCommentData);
+    // await addCommentView.bodyInput.fill(newCommentData.body);
+    // await addCommentView.saveButton.click();
+
+    //Assert - if comment created
     await expect(articlePage.alertPopup).toHaveText(
       expectedCommentCreatedPopup,
     );
@@ -64,7 +70,25 @@ test.describe('Create, verify and delete comment', () => {
     await expect(articleComment.body).toHaveText(newCommentData.body);
     await articleComment.link.click();
 
-    //Assert
+    //Assert - comment body as expected
     await expect(commentPage.commentBody).toHaveText(newCommentData.body);
+
+    //Edit comment
+    //Arrange
+    const editedCommentData = prepareRandomNewComment();
+
+    //Act
+    await commentPage.editButton.click();
+    await editCommentView.editComment(editedCommentData);
+
+    //Assert - updated comment as expected
+    await expect(commentPage.commentBody).toHaveText(editedCommentData.body);
+    await expect(commentPage.alertPopup).toHaveText(expectedCommentEditedPopup);
+
+    await commentPage.returnLink.click();
+    const editedArticleComment = articlePage.getArticleComment(
+      editedCommentData.body,
+    );
+    await expect(editedArticleComment.body).toHaveText(editedCommentData.body);
   });
 });
