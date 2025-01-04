@@ -1,15 +1,20 @@
-import { MainMenuComponent } from '../components/main-menu.components';
+//import { MainMenuComponent } from '../components/main-menu.components';
+import { AddCommentModel } from '../models/comment.model';
+import { AddCommentView } from '../views/add-comment.view';
 import { BasePage } from './base.page';
 import { Locator, Page } from '@playwright/test';
 
 interface ArticleComment {
   body: Locator;
   link: Locator;
+  id: Locator;
 } //specific to this page object, therefore not saved as a separate model
 
 export class ArticlePage extends BasePage {
   url = '/articles.html';
-  mainMenu = new MainMenuComponent(this.page);
+  //mainMenu = new MainMenuComponent(this.page);
+  addCommentView = new AddCommentView(this.page);
+
   articleTitle = this.page.getByTestId('article-title');
   articleBody = this.page.getByTestId('article-body');
   deleteIcon = this.page.getByTestId('delete');
@@ -35,6 +40,12 @@ export class ArticlePage extends BasePage {
     return {
       body: commentContainer.locator(':text("comment:") + span'),
       link: commentContainer.locator("[id^='gotoComment']"),
-    }; //we return an object
+      id: commentContainer.locator('label:text("id:") + span.super-style'),
+    }; //return an object
+  }
+
+  async addNewComment(newCommentData: AddCommentModel): Promise<void> {
+    await this.addCommentButton.click();
+    await this.addCommentView.createComment(newCommentData);
   }
 }

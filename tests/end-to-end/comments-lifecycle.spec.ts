@@ -8,7 +8,6 @@ import { CommentPage } from '../../src/pages/comment.page';
 import { LoginPage } from '../../src/pages/login.page';
 import { testUser1 } from '../../src/test-data/user.data';
 import { AddArticleView } from '../../src/views/add-article.view';
-import { AddCommentView } from '../../src/views/add-comment.view';
 import { EditCommentView } from '../../src/views/edit-comment.view';
 import test, { expect } from '@playwright/test';
 
@@ -18,16 +17,15 @@ test.describe('Create, verify and delete comment', () => {
   let loginPage: LoginPage;
   let articleData: AddArticleModel;
   let articlePage: ArticlePage;
-  let addCommentView: AddCommentView;
   let commentPage: CommentPage;
   let editCommentView: EditCommentView;
+  let editedCommentData: AddCommentModel;
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
     articlesPage = new ArticlesPage(page);
     addArticleView = new AddArticleView(page);
     articlePage = new ArticlePage(page);
-    addCommentView = new AddCommentView(page);
     commentPage = new CommentPage(page);
     editCommentView = new EditCommentView(page);
 
@@ -42,20 +40,14 @@ test.describe('Create, verify and delete comment', () => {
   });
 
   test('operate on comments @GAD_R05_01 @positive', async () => {
-    const newCommentData = prepareRandomNewComment();
+    const firstCommentData = prepareRandomNewComment();
+    const secondCommentData = prepareRandomNewComment();
 
-    await test.step('create new comment', async () => {
-      //Arrange
-      const expectedAddCommentHeader = 'Add New Comment';
-      const expectedCommentCreatedPopup = 'Comment was created';
+    const expectedCommentCreatedPopup = 'Comment was created';
 
+    await test.step('create first comment', async () => {
       //Act
-      await articlePage.addCommentButton.click();
-      await expect(addCommentView.addNewHeader).toHaveText(
-        expectedAddCommentHeader,
-      );
-
-      await addCommentView.createComment(newCommentData);
+      await articlePage.addNewComment(firstCommentData);
 
       //Assert
       await expect
@@ -63,19 +55,19 @@ test.describe('Create, verify and delete comment', () => {
         .toHaveText(expectedCommentCreatedPopup);
     });
 
-    await test.step('verify comment', async () => {
+    await test.step('verify first comment', async () => {
       //Act
-      const articleComment = articlePage.getArticleComment(newCommentData.body);
-      await expect(articleComment.body).toHaveText(newCommentData.body);
-      await articleComment.link.click();
+      const firstArticleComment = articlePage.getArticleComment(
+        firstCommentData.body,
+      );
+      await expect(firstArticleComment.body).toHaveText(firstCommentData.body);
+      await firstArticleComment.link.click();
 
       //Assert
-      await expect(commentPage.commentBody).toHaveText(newCommentData.body);
+      await expect(commentPage.commentBody).toHaveText(firstCommentData.body);
     });
 
-    let editedCommentData: AddCommentModel;
-
-    await test.step('edit comment', async () => {
+    await test.step('edit first comment', async () => {
       //Arrange
       editedCommentData = prepareRandomNewComment();
       const expectedCommentEditedPopup = 'Comment was updated';
@@ -102,6 +94,21 @@ test.describe('Create, verify and delete comment', () => {
       await expect(editedArticleComment.body).toHaveText(
         editedCommentData.body,
       );
+    });
+
+    await test.step('create and verify second comment', async () => {
+      //Act
+      await articlePage.addNewComment(secondCommentData);
+
+      //Assert
+      const secondArticleComment = articlePage.getArticleComment(
+        secondCommentData.body,
+      );
+      await expect(secondArticleComment.body).toHaveText(
+        secondCommentData.body,
+      );
+      await secondArticleComment.link.click();
+      await expect(commentPage.commentBody).toHaveText(secondCommentData.body);
     });
   });
 });
