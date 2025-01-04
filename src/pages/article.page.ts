@@ -7,7 +7,6 @@ import { Locator, Page } from '@playwright/test';
 interface ArticleComment {
   body: Locator;
   link: Locator;
-  id: Locator;
 } //specific to this page object, therefore not saved as a separate model
 
 export class ArticlePage extends BasePage {
@@ -40,7 +39,6 @@ export class ArticlePage extends BasePage {
     return {
       body: commentContainer.locator(':text("comment:") + span'),
       link: commentContainer.locator("[id^='gotoComment']"),
-      id: commentContainer.locator('label:text("id:") + span.super-style'),
     }; //return an object
   }
 
