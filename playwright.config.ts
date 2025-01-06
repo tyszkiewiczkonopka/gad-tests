@@ -27,6 +27,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      grepInvert: /@logged/,
       use: { ...devices['Desktop Chrome'] },
     },
     {

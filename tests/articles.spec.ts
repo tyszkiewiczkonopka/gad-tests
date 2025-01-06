@@ -14,7 +14,9 @@ test.describe('Verify articles', () => {
     addArticleView = new AddArticleView(page);
 
     // Restore the session by setting the cookies and storage data
-    const sessionData = JSON.parse(fs.readFileSync('session.json', 'utf-8'));
+    const sessionData = JSON.parse(
+      fs.readFileSync('tmp/session.json', 'utf-8'),
+    );
     await page.context().addCookies(sessionData.cookies);
     await page.context().storageState(sessionData.localStorage);
 
