@@ -24,7 +24,7 @@ test.describe('Verify articles', () => {
     await expect.soft(addArticleView.addNewHeader).toBeVisible();
   });
 
-  test('new article not created - missing title @GAD_R04_01 @negative', async () => {
+  test('new article not created - missing title @GAD_R04_01 @negative @logged', async () => {
     //Arrange
     const expectedErrorMessage = 'Article was not created';
 
