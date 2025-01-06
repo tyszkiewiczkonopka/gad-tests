@@ -1,23 +1,23 @@
 import { prepareRandomNewArticle } from '../src/factories/article.factory';
 import { ArticlePage } from '../src/pages/article.page';
 import { ArticlesPage } from '../src/pages/articles.page';
-import { LoginPage } from '../src/pages/login.page';
-import { testUser1 } from '../src/test-data/user.data';
 import { AddArticleView } from '../src/views/add-article.view';
 import test, { expect } from '@playwright/test';
+import * as fs from 'fs';
 
 test.describe('Verify articles', () => {
   let articlesPage: ArticlesPage;
   let addArticleView: AddArticleView;
-  let loginPage: LoginPage;
 
   test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
     articlesPage = new ArticlesPage(page);
     addArticleView = new AddArticleView(page);
 
-    await loginPage.goto();
-    await loginPage.login(testUser1);
+    // Restore the session by setting the cookies and storage data
+    const sessionData = JSON.parse(fs.readFileSync('session.json', 'utf-8'));
+    await page.context().addCookies(sessionData.cookies);
+    await page.context().storageState(sessionData.localStorage);
+
     await articlesPage.goto();
 
     await articlesPage.addArticleButtonLogged.click();
@@ -38,7 +38,7 @@ test.describe('Verify articles', () => {
     await expect(addArticleView.alertPopup).toHaveText(expectedErrorMessage);
   });
 
-  test('new article not created - missing body @GAD_R04_01 @negative', async () => {
+  test('new article not created - missing body @GAD_R04_01 @negative @logged', async () => {
     //Arrange
     const expectedErrorMessage = 'Article was not created';
 
@@ -52,7 +52,7 @@ test.describe('Verify articles', () => {
     await expect(addArticleView.alertPopup).toHaveText(expectedErrorMessage);
   });
   test.describe('Title length', () => {
-    test('new article not created - title 128 characters @GAD_R04_01 @positive', async ({
+    test('new article not created - title 128 characters @GAD_R04_01 @positive @logged', async ({
       page,
     }) => {
       //Arrange
@@ -69,7 +69,7 @@ test.describe('Verify articles', () => {
         .toHaveText(articleData.body, { useInnerText: true });
     });
 
-    test('new article not created - title over 128 characters @GAD_R04_01 @negative', async () => {
+    test('new article not created - title over 128 characters @GAD_R04_01 @negative @logged', async () => {
       //Arrange
       const expectedErrorMessage = 'Article was not created';
       const articleData = prepareRandomNewArticle(129);
