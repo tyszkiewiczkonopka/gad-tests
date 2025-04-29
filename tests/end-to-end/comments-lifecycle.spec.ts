@@ -5,8 +5,6 @@ import { AddCommentModel } from '../../src/models/comment.model';
 import { ArticlePage } from '../../src/pages/article.page';
 import { ArticlesPage } from '../../src/pages/articles.page';
 import { CommentPage } from '../../src/pages/comment.page';
-import { LoginPage } from '../../src/pages/login.page';
-import { testUser1 } from '../../src/test-data/user.data';
 import { AddArticleView } from '../../src/views/add-article.view';
 import { EditCommentView } from '../../src/views/edit-comment.view';
 import test, { expect } from '@playwright/test';
@@ -14,7 +12,6 @@ import test, { expect } from '@playwright/test';
 test.describe('Create, verify and delete comment', () => {
   let articlesPage: ArticlesPage;
   let addArticleView: AddArticleView;
-  let loginPage: LoginPage;
   let articleData: AddArticleModel;
   let articlePage: ArticlePage;
   let commentPage: CommentPage;
@@ -22,7 +19,6 @@ test.describe('Create, verify and delete comment', () => {
   let editedCommentData: AddCommentModel;
 
   test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
     articlesPage = new ArticlesPage(page);
     addArticleView = new AddArticleView(page);
     articlePage = new ArticlePage(page);
@@ -32,14 +28,12 @@ test.describe('Create, verify and delete comment', () => {
     articleData = prepareRandomNewArticle();
 
     //create article before testing comments
-    await loginPage.goto();
-    await loginPage.login(testUser1);
     await articlesPage.goto();
     await articlesPage.addArticleButtonLogged.click();
     await addArticleView.createArticle(articleData);
   });
 
-  test('operate on comments @GAD_R05_01 @positive', async () => {
+  test('operate on comments @GAD_R05_01 @logged', async () => {
     const firstCommentData = prepareRandomNewComment();
     const secondCommentData = prepareRandomNewComment();
 
