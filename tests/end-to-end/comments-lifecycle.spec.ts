@@ -1,12 +1,12 @@
-import { prepareRandomNewArticle } from '../../src/factories/article.factory';
-import { prepareRandomNewComment } from '../../src/factories/comment.factory';
-import { AddArticleModel } from '../../src/models/article.model';
-import { AddCommentModel } from '../../src/models/comment.model';
-import { ArticlePage } from '../../src/pages/article.page';
-import { ArticlesPage } from '../../src/pages/articles.page';
-import { CommentPage } from '../../src/pages/comment.page';
-import { AddArticleView } from '../../src/views/add-article.view';
-import { EditCommentView } from '../../src/views/edit-comment.view';
+import { prepareRandomNewArticle } from '@_src/factories/article.factory';
+import { prepareRandomNewComment } from '@_src/factories/comment.factory';
+import { AddArticleModel } from '@_src/models/article.model';
+import { AddCommentModel } from '@_src/models/comment.model';
+import { ArticlePage } from '@_src/pages/article.page';
+import { ArticlesPage } from '@_src/pages/articles.page';
+import { CommentPage } from '@_src/pages/comment.page';
+import { AddArticleView } from '@_src/views/add-article.view';
+import { EditCommentView } from '@_src/views/edit-comment.view';
 import test, { expect } from '@playwright/test';
 
 test.describe('Create, verify and delete comment', () => {
