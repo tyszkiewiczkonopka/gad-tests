@@ -1,7 +1,7 @@
-//import { MainMenuComponent } from '../components/main-menu.components';
-import { AddCommentModel } from '../models/comment.model';
+//import { MainMenuComponent } from '@_src/components/main-menu.components';
 import { AddCommentView } from '../views/add-comment.view';
 import { BasePage } from './base.page';
+import { AddCommentModel } from '@_src/models/comment.model';
 import { Locator, Page } from '@playwright/test';
 
 interface ArticleComment {
