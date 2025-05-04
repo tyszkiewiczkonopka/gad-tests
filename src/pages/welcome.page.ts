@@ -6,4 +6,8 @@ export class WelcomePage extends BasePage {
   constructor(page: Page) {
     super(page);
   }
+
+  async getTitle(): Promise<string> {
+    return this.page.title();
+  }
 }

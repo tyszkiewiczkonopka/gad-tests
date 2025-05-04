@@ -1,6 +1,5 @@
 import { LoginUserModel } from '@_src/models/user.model';
 import { LoginPage } from '@_src/pages/login.page';
-import { WelcomePage } from '@_src/pages/welcome.page';
 import { testUser1 } from '@_src/test-data/user.data';
 import test, { expect } from '@playwright/test';
 
@@ -8,14 +7,11 @@ test.describe('Verify login', () => {
   test('login with correct credentials @GAD_R02_01', async ({ page }) => {
     //Arrange
     const expectedWelcomeTitle = 'Welcome';
-
     const loginPage = new LoginPage(page);
-    const welcomePage = new WelcomePage(page);
 
     //Act
     await loginPage.goto();
-    await loginPage.login(testUser1);
-
+    const welcomePage = await loginPage.login(testUser1);
     const title = await welcomePage.getTitle();
 
     //Assert
