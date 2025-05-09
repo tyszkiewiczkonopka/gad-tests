@@ -4,6 +4,7 @@ import { AddArticleModel } from '@_src/models/article.model';
 import { AddCommentModel } from '@_src/models/comment.model';
 import { ArticlePage } from '@_src/pages/article.page';
 import { ArticlesPage } from '@_src/pages/articles.page';
+import { CommentPage } from '@_src/pages/comment.page';
 import { AddArticleView } from '@_src/views/add-article.view';
 import { expect, test } from '@playwright/test';
 
@@ -45,7 +46,8 @@ test.describe('Create, verify and delete comment', () => {
         .toHaveText(expectedCommentCreatedPopup);
     });
 
-    const commentPage = await test.step('verify comment', async () => {
+    let commentPage: CommentPage;
+    await test.step('verify comment', async () => {
       // Act
       const articleComment = articlePage.getArticleComment(newCommentData.body);
       await expect(articleComment.body).toHaveText(newCommentData.body);
@@ -69,7 +71,7 @@ test.describe('Create, verify and delete comment', () => {
 
       // Act
       const editCommentView = await commentPage.clickEditButton();
-      await editCommentView.updateComment(editCommentData);
+      commentPage = await editCommentView.updateComment(editCommentData);
 
       // Assert
       await expect
