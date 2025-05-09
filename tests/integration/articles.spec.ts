@@ -11,7 +11,6 @@ test.describe('Verify articles', () => {
 
   test.beforeEach(async ({ page }) => {
     articlesPage = new ArticlesPage(page);
-    addArticleView = new AddArticleView(page);
 
     // Restore the session by setting the cookies and storage data
     const sessionData = JSON.parse(
@@ -22,7 +21,7 @@ test.describe('Verify articles', () => {
 
     await articlesPage.goto();
 
-    await articlesPage.addArticleButtonLogged.click();
+    const addArticleView = await articlesPage.clickAddArticleButtonLogged();
     await expect.soft(addArticleView.addNewHeader).toBeVisible();
   });
 
