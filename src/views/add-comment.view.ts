@@ -1,4 +1,5 @@
 import { AddCommentModel } from '@_src/models/comment.model';
+import { ArticlePage } from '@_src/pages/article.page';
 import { Page } from '@playwright/test';
 
 export class AddCommentView {
@@ -14,8 +15,9 @@ export class AddCommentView {
     });
   }
 
-  async createComment(commentData: AddCommentModel): Promise<void> {
+  async createComment(commentData: AddCommentModel): Promise<ArticlePage> {
     await this.bodyInput.fill(commentData.body);
     await this.saveButton.click();
+    return new ArticlePage(this.page);
   }
 }
