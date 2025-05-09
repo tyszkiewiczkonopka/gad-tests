@@ -1,34 +1,46 @@
-//import { MainMenuComponent } from '@_src/components/main-menu.components';
-import { AddCommentView } from '../views/add-comment.view';
-import { AddCommentModel } from '@_src/models/comment.model';
+import { MainMenuComponent } from '@_src/components/main-menu.component';
+import { ArticlesPage } from '@_src/pages/articles.page';
 import { BasePage } from '@_src/pages/base.page';
+import { CommentPage } from '@_src/pages/comment.page';
+import { AddCommentView } from '@_src/views/add-comment.view';
 import { Locator, Page } from '@playwright/test';
 
 interface ArticleComment {
   body: Locator;
   link: Locator;
-} //specific to this page object, therefore not saved as a separate model
+}
 
 export class ArticlePage extends BasePage {
-  url = '/articles.html';
-  //mainMenu = new MainMenuComponent(this.page);
-  addCommentView = new AddCommentView(this.page);
-
-  articleTitle = this.page.getByTestId('article-title');
-  articleBody = this.page.getByTestId('article-body');
-  deleteIcon = this.page.getByTestId('delete');
-  addCommentButton = this.page.locator('#add-new');
-  alertPopup = this.page.getByTestId('alert-popup');
+  url = '/article.html';
+  mainMenu: MainMenuComponent;
+  articleTitle: Locator;
+  articleBody: Locator;
+  deleteIcon: Locator;
+  addCommentButton: Locator;
+  alertPopup: Locator;
 
   constructor(page: Page) {
     super(page);
+    this.mainMenu = new MainMenuComponent(this.page);
+    this.articleTitle = this.page.getByTestId('article-title');
+    this.articleBody = this.page.getByTestId('article-body');
+    this.deleteIcon = this.page.getByTestId('delete');
+    this.addCommentButton = this.page.locator('#add-new-comment');
+    this.alertPopup = this.page.getByTestId('alert-popup');
   }
 
-  async deleteArticle(): Promise<void> {
+  async clickAddCommentButton(): Promise<AddCommentView> {
+    await this.addCommentButton.click();
+    return new AddCommentView(this.page);
+  }
+
+  async deleteArticle(): Promise<ArticlesPage> {
     this.page.on('dialog', async (dialog) => {
       await dialog.accept();
-    }); //handles dialog window (pop-up)
-    await this.deleteIcon.click();
+    });
+    this.deleteIcon.click();
+
+    return new ArticlesPage(this.page);
   }
 
   getArticleComment(body: string): ArticleComment {
@@ -39,11 +51,11 @@ export class ArticlePage extends BasePage {
     return {
       body: commentContainer.locator(':text("comment:") + span'),
       link: commentContainer.locator("[id^='gotoComment']"),
-    }; //return an object
+    };
   }
 
-  async addNewComment(newCommentData: AddCommentModel): Promise<void> {
-    await this.addCommentButton.click();
-    await this.addCommentView.createComment(newCommentData);
+  async clickCommentLink(commentLink: Locator): Promise<CommentPage> {
+    await commentLink.click();
+    return new CommentPage(this.page);
   }
 }
