@@ -46,8 +46,7 @@ test.describe('Create, verify and delete comment', () => {
         .toHaveText(expectedCommentCreatedPopup);
     });
 
-    let commentPage: CommentPage;
-    await test.step('verify comment', async () => {
+    let commentPage = await test.step('verify comment', async () => {
       // Act
       const articleComment = articlePage.getArticleComment(newCommentData.body);
       await expect(articleComment.body).toHaveText(newCommentData.body);
