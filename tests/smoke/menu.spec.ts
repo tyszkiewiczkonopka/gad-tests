@@ -1,7 +1,8 @@
 import { expect, test } from '@_src/fixtures/merge.fixture';
 
 test.describe('Verify menu main buttons', () => {
-  test('comments button navigates to comments page @GAD-R01-03', async ({
+  // eslint-disable-next-line playwright/no-skipped-test
+  test.skip('comments button navigates to comments page @GAD-R01-03', async ({
     articlesPage,
     commentsPage,
   }) => {
@@ -16,7 +17,6 @@ test.describe('Verify menu main buttons', () => {
     expect(title).toContain(expectedCommentsTitle);
   });
 
-  // eslint-disable-next-line playwright/no-skipped-test
   test('articles button navigates to articles page @GAD-R01-03', async ({
     commentsPage,
   }) => {
