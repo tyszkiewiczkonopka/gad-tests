@@ -17,7 +17,7 @@ test.describe('Verify menu main buttons', () => {
   });
 
   // eslint-disable-next-line playwright/no-skipped-test
-  test.skip('articles button navigates to articles page @GAD-R01-03', async ({
+  test('articles button navigates to articles page @GAD-R01-03', async ({
     commentsPage,
   }) => {
     // Arrange
