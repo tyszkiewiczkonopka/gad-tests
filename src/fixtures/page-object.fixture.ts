@@ -6,10 +6,12 @@ import { LoginPage } from '@_src/pages/login.page';
 import { RegisterPage } from '@_src/pages/register.page';
 import { WelcomePage } from '@_src/pages/welcome.page';
 import { AddArticleView } from '@_src/views/add-article.view';
+import { AddCommentView } from '@_src/views/add-comment.view';
 import { test as baseTest } from '@playwright/test';
 
 interface Pages {
   addArticleView: AddArticleView;
+  addCommentView: AddCommentView;
   articlePage: ArticlePage;
   articlesPage: ArticlesPage;
   commentsPage: CommentsPage;
@@ -23,6 +25,10 @@ export const pageObjectTest = baseTest.extend<Pages>({
   addArticleView: async ({ articlesPage }, use) => {
     const addArticleView = await articlesPage.clickAddArticleButtonLogged(); //ta metoda zwraca view więc nie trzeba oddzielnie tworzyć obiektu
     await use(addArticleView);
+  },
+  addCommentView: async ({ articlePage }, use) => {
+    const addCommentView = await articlePage.clickAddCommentButton(); //ta metoda zwraca view więc nie trzeba oddzielnie tworzyć obiektu
+    await use(addCommentView);
   },
   articlePage: async ({ page }, use) => {
     const articlePage = new ArticlePage(page);

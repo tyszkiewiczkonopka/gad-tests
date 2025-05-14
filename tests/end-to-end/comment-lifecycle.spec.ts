@@ -1,21 +1,16 @@
 import { prepareRandomNewArticle } from '@_src/factories/article.factory';
 import { prepareRandomNewComment } from '@_src/factories/comment.factory';
+import { expect, test } from '@_src/fixtures/merge.fixture';
 import { AddArticleModel } from '@_src/models/article.model';
 import { AddCommentModel } from '@_src/models/comment.model';
 import { ArticlePage } from '@_src/pages/article.page';
-import { ArticlesPage } from '@_src/pages/articles.page';
-import { expect, test } from '@playwright/test';
 
 test.describe('Create, verify and delete comment', () => {
   let articleData: AddArticleModel;
   let articlePage: ArticlePage;
 
-  test.beforeEach(async ({ page }) => {
-    const articlesPage = new ArticlesPage(page);
+  test.beforeEach(async ({ addArticleView }) => {
     articleData = prepareRandomNewArticle();
-
-    await articlesPage.goto();
-    const addArticleView = await articlesPage.clickAddArticleButtonLogged();
     articlePage = await addArticleView.createArticle(articleData);
   });
 
@@ -33,7 +28,7 @@ test.describe('Create, verify and delete comment', () => {
         .soft(addCommentView.addNewHeader)
         .toHaveText(expectedAddCommentHeader);
 
-      articlePage = await addCommentView.createComment(newCommentData);
+      await addCommentView.createComment(newCommentData);
 
       // Assert
       await expect
