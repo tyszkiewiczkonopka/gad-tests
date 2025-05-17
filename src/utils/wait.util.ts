@@ -1,18 +1,25 @@
 import { RESPONSE_TIMEOUT } from '@_pw-config';
 import { Page, Response } from '@playwright/test';
 
+interface WaitForResponseOptions {
+  page: Page;
+  endpoint: string;
+  requestMethod?: string;
+  statusCode?: number;
+}
+
 export async function waitForResponse(
-  page: Page,
-  endpoint: string,
-  requestMethod?: string,
-  statusCode?: number,
+  waitForResponseOptions: WaitForResponseOptions,
 ): Promise<Response> {
-  return page.waitForResponse(
+  return waitForResponseOptions.page.waitForResponse(
     (response) => {
       return (
-        response.url().includes(endpoint) &&
-        (!requestMethod || response.request().method() == requestMethod) &&
-        (!statusCode || response.status() == statusCode)
+        response.url().includes(waitForResponseOptions.endpoint) &&
+        (!waitForResponseOptions.requestMethod ||
+          response.request().method() ===
+            waitForResponseOptions.requestMethod) && // porównanie wartości a nie referencji
+        (!waitForResponseOptions.statusCode ||
+          response.status() === waitForResponseOptions.statusCode)
       );
     },
     {

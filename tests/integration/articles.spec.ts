@@ -1,4 +1,3 @@
-import { RESPONSE_TIMEOUT } from '@_pw-config';
 import { prepareRandomNewArticle } from '@_src/factories/article.factory';
 import { expect, test } from '@_src/fixtures/merge.fixture';
 import { waitForResponse } from '@_src/utils/wait.util';
@@ -17,7 +16,11 @@ test.describe('Verify articles', () => {
 
     // Act
     await addArticleView.createArticle(articleData);
-    const response = await waitForResponse(page, '/api/articles');
+    const waitForResponseOptions = {
+      page,
+      endpoint: '/api/articles',
+    };
+    const response = await waitForResponse(waitForResponseOptions);
 
     // Assert
     await expect(addArticleView.alertPopup).toHaveText(expectedErrorMessage);
@@ -72,22 +75,21 @@ test.describe('Verify articles', () => {
     }) => {
       // Arrange
       const articleData = prepareRandomNewArticle();
-      const responsePromise = page.waitForResponse(
-        (response) => {
-          return (
-            response.url().includes('/api/articles') &&
-            response.request().method() == 'GET'
-          );
-        },
-        { timeout: RESPONSE_TIMEOUT },
-      );
+
+      const waitForResponseOptions = {
+        page,
+        method: 'GET',
+        endpoint: '/api/articles',
+      };
+
+      const responsePromise = waitForResponse(waitForResponseOptions);
       // Act
       const articlePage = await addArticleView.createArticle(articleData);
-      const response = await responsePromise;
+      const response = responsePromise;
 
       // Assert
       await expect.soft(articlePage.articleTitle).toHaveText(articleData.title);
-      expect(response.ok()).toBeTruthy();
+      expect((await response).ok()).toBeTruthy();
     });
   });
 });

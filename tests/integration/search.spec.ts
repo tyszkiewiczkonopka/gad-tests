@@ -9,7 +9,13 @@ test.describe('Verify search component for articles', () => {
     // Arrange
     const expectedArticleNumber = 6;
     await expect(articlesPage.goSearchButton).toBeInViewport();
-    const responsePromise = waitForResponse(page, '/api/articles');
+
+    const waitForResponseOptions = {
+      page,
+      endpoint: '/api/articles',
+    };
+
+    const responsePromise = waitForResponse(waitForResponseOptions);
 
     // Act
     await articlesPage.goSearchButton.click();
