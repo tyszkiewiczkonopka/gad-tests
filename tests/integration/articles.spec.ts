@@ -1,6 +1,6 @@
-import { RESPONSE_TIMEOUT } from '@_pw-config';
 import { prepareRandomNewArticle } from '@_src/factories/article.factory';
 import { expect, test } from '@_src/fixtures/merge.fixture';
+import { waitForResponse } from '@_src/utils/wait.util';
 
 test.describe('Verify articles', () => {
   test('reject creating article without title @GAD-R04-01 @logged', async ({
@@ -14,17 +14,13 @@ test.describe('Verify articles', () => {
     const articleData = prepareRandomNewArticle();
     articleData.title = '';
 
-    const responsePromise = page.waitForResponse('/api/articles', {
-      timeout: RESPONSE_TIMEOUT,
-    });
-
     // Act
     await addArticleView.createArticle(articleData);
-    const response = await responsePromise;
+    const response = await waitForResponse(page, '/api/articles');
 
     // Assert
     await expect(addArticleView.alertPopup).toHaveText(expectedErrorMessage);
-    await expect(response.status()).toBe(expectedErrorCode);
+    expect(response.status()).toBe(expectedErrorCode);
   });
 
   test('reject creating article without body @GAD-R04-01 @logged', async ({
