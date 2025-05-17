@@ -4,8 +4,19 @@ import { Page, Response } from '@playwright/test';
 export async function waitForResponse(
   page: Page,
   endpoint: string,
+  requestMethod?: string,
+  statusCode?: number,
 ): Promise<Response> {
-  return page.waitForResponse(endpoint, {
-    timeout: RESPONSE_TIMEOUT,
-  });
+  return page.waitForResponse(
+    (response) => {
+      return (
+        response.url().includes(endpoint) &&
+        (!requestMethod || response.request().method() == requestMethod) &&
+        (!statusCode || response.status() == statusCode)
+      );
+    },
+    {
+      timeout: RESPONSE_TIMEOUT,
+    },
+  );
 }
