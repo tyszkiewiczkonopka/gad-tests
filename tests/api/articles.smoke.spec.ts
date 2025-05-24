@@ -12,4 +12,21 @@ test.describe('Verify articles API endpoint @GAD-R08-01 @api', () => {
     // Assert
     expect(response.status()).toBe(expectedStatusCode);
   });
+
+  test('GET articles should return at least one article @predefined_data', async ({
+    request,
+  }) => {
+    // Arrange
+    const expectedArticlesMinimumNumber = 1;
+    const articlesEndpoint = '/api/articles';
+
+    // Act\
+    const response = await request.get(articlesEndpoint);
+    const responseBody = await response.json();
+
+    // Assert
+    expect(responseBody.length).toBeGreaterThanOrEqual(
+      expectedArticlesMinimumNumber,
+    );
+  });
 });
