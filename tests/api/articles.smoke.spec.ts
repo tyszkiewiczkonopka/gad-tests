@@ -29,4 +29,31 @@ test.describe('Verify articles API endpoint @GAD-R08-01 @api', () => {
       expectedArticlesMinimumNumber,
     );
   });
+
+  test('GET articles should return articleobject @predefined_data', async ({
+    request,
+  }) => {
+    // Arrange
+    const expectedArticleFields = [
+      'id',
+      'user_id',
+      'title',
+      'body',
+      'date',
+      'image',
+    ];
+    const articlesEndpoint = '/api/articles';
+
+    // Act
+    const response = await request.get(articlesEndpoint);
+    const responseBody = await response.json();
+    const article = responseBody[0]; // retrieve the first article
+
+    // Assert
+    expectedArticleFields.forEach((field) => {
+      expect.soft(article).toHaveProperty(field);
+      // eslint-disable-next-line no-console
+      console.log(`Article field "${field}" exists: ${article[field]}`);
+    });
+  });
 });
